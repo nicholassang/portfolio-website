@@ -1,0 +1,61 @@
+---
+
+## Introduction
+
+This project started as an unfinished idea from NUS Hack&Roll 2025. My team and I had conceptualized a real-time version of the Stress Card Game, but we ran out of time before we could make it fully playable.
+
+A year later, I felt much more confident in my backend and system design skills. I wanted to revisit the idea - not just to complete it, but to build it properly.
+
+The Stress Card Game is a popular 1v1 game in Singapore. What makes it exciting is the constant tension - one mistake and your opponent can set you back instantly. Translating that “stress element” into an online multiplayer environment became the core challenge of this project.
+
+---
+
+## Intuition
+
+- A 1v1 game requires reliable matchmaking and deterministic room handling.
+
+- Real-time synchronization is essential to preserve the “stress” mechanic.
+
+- Player identity, room codes, and game sessions must be uniquely generated and tracked.
+
+- The server must act as the source of truth to prevent state desynchronization.
+
+- Animations and drag-and-drop interactions must feel responsive despite network latency.
+
+---
+
+## Process
+
+I started with matchmaking. Surprisingly, the initial implementation was simpler than I expected. I maintained a server-side queue (an in-memory array) that pairs players as they connect. Once two players are available, a game session is instantiated and both clients are assigned to the same room.
+
+For private matches, I implemented room codes that are automatically generated when a player wants to invite a friend. I used nanoId to generate unique playerId, gameId, and room codes. This kept identifiers short, collision-resistant, and easy to handle across the client and server.
+
+For real-time communication, I used WebSockets. Instead of pushing for full real-time optimization immediately, I intentionally simplified it to near-real-time updates at 20 FPS. This allowed me to focus on getting the core game logic correct - handling card state, validating moves, resolving conflicts - before worrying about micro-optimizations. The server acts as the authoritative source of truth, and clients simply render the updated state.
+
+On the frontend, I used React to handle UI state and drag-and-drop mechanics for card interactions. Ensuring that animations felt smooth while remaining consistent with server updates required careful separation between visual state and game state.
+
+The entire backend and supporting services were deployed on AWS. Hosting the WebSocket server and managing infrastructure in the cloud gave me hands-on experience with deployment pipelines and production environment configuration.
+
+---
+
+## What I Learned
+
+- Implementing real-time multiplayer logic with WebSockets
+
+- Designing authoritative server architecture to prevent desync
+
+- Using nanoId for scalable, collision-resistant identifiers
+
+- Managing deployment and infrastructure on AWS
+
+- Handling drag-and-drop mechanics cleanly in React
+
+- Balancing performance with development velocity
+
+---
+
+## What's Next
+
+The next step is improving UI polish and responsiveness. The core game works, but the experience can feel sharper - better animations, clearer feedback, and improved mobile responsiveness would elevate the gameplay significantly.
+
+I also want to improve matchmaking reliability and scalability. Moving from in-memory queues to a more persistent or distributed approach would make the system more production-ready. Performance tuning beyond the current 20 FPS update cycle is another area I’d like to explore once the infrastructure becomes more robust.

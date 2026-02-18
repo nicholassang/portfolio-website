@@ -1,0 +1,99 @@
+---
+
+## Introduction
+
+SchoolFinderz was a project aimed at helping parents find the right secondary schools, junior colleges, and universities for their children.
+
+We wanted to go beyond a simple list of schools - the app included:
+
+- Interactive Google Maps with school locations
+
+- Sentiment analysis from school reviews
+
+- A chatbot for parent queries
+
+- CCA (Co-Curricular Activities) filtering
+
+- Advanced search and recommendation features
+
+I was primarily responsible for integrating the Google Maps API and making sure the locations displayed correctly and interactively on the frontend.
+
+---
+
+## My Role: Google Maps API Integration
+
+The Maps integration itself went smoothly:
+
+- Displaying 500+ school locations
+
+- Markers with tooltips and detailed info
+
+- Interactive zoom and panning
+
+- Dynamic filtering based on user input
+
+- Route tracking
+
+Technically, it was solid. But the project taught me one of the harshest lessons in API usage and cost management.
+
+---
+
+## The $500 Mistake
+
+I underestimated how expensive API calls could get.
+
+Here’s what happened:
+
+- **I did not realize that budget alerts do not stop API usage — they only notify you.**
+
+- **My code was inefficient: every page refresh triggered 500+ geocoding API calls, one for each school location.**
+
+Within two days, I racked up over $500 SGD in Google Maps charges.
+
+It was a painful, expensive lesson in:
+
+- Efficient API usage
+
+- Rate limiting
+
+- Optimizing data caching
+
+- Cost-awareness in cloud platforms
+
+---
+
+## Lessons Learned
+
+Despite the financial pain, I learned a lot:
+
+- Code efficiency matters in real-world applications — every API call can cost money
+
+- Caching is very important - storing geocoded results avoids repeated calls
+
+- Collaboration is essential - I studied teammates’ design patterns and workflows
+
+- Cloud platforms are powerful but tricky - Google Cloud Platform UI is unintuitive and slow to navigate
+
+From this, I became much more deliberate with:
+
+- Backend optimizations
+
+- API call batching
+
+- Planning and reviewing cloud costs
+
+---
+
+## Other Features of the App
+
+While I focused on Maps, the team also implemented:
+
+- Sentiment analysis on reviews to gauge school reputation
+
+- A chatbot to answer parent questions
+
+- Advanced filters for CCAs and school type
+
+Intuitive UI for browsing school data
+
+- The project gave me exposure to a full-stack application, combining frontend interactivity, backend logic, and external API integrations.

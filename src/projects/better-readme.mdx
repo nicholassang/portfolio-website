@@ -1,0 +1,81 @@
+---
+
+## Introduction
+
+BetterReadME was a personal project born out of curiosity and a desire to make creating README files easier, with multi-language support, all from the command line.
+
+I wanted a lightweight tool that allowed developers to generate structured README files in any language without leaving the terminal.
+
+---
+
+## Goals & Vision
+
+- Create README files quickly using a CLI interface
+
+- Support multiple languages
+
+- Provide a REPL-style workflow for continuous editing and translation
+
+- Keep everything offline, without requiring cloud-based APIs
+
+---
+
+## Implementation
+
+Language Translation: Used Argos Translate to convert README content into different languages.
+
+CLI Interface: REPL loop allowing users to:
+
+- Input section headings
+
+- Add content dynamically
+
+- Translate sections
+
+- Offline Workflow: Designed to operate entirely on the user’s device without an internet connection
+
+---
+
+## Why It Was Discontinued
+
+Despite my initial enthusiasm, I quickly ran into real-world limitations:
+
+**Offline translation is storage-heavy**
+
+- Argos Translate relies on language models stored locally
+
+- Multi-language support would require dozens of megabytes per language
+
+Uploading these large files to GitHub is infeasible
+
+**Economic feasibility**
+
+- Passing the storage burden to users is unreasonable
+
+- Most translation tools are cloud/server-based for a reason
+
+Eventually, I realized: offline translation for multiple languages on a CLI is not practical without a dedicated server.
+
+So I discontinued the project - but it was an excellent learning experience.
+
+---
+
+## Lessons Learned
+
+BetterReadME taught me more than just CLI programming:
+
+- How to build a REPL loop in Python
+
+- How to structure a command-line workflow for usability
+
+- The practical limitations of offline machine learning models
+
+- That cloud or server-based translation exists for a reason
+
+- How to plan a project’s feasibility before implementation
+
+It was humbling - I went in thinking it was a tiny project, but it revealed the realities of storage constraints, user experience, and model size.
+
+Sometimes, the lessons from failure are more valuable than the success itself. This project is one of those lessons.
+
+---

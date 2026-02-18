@@ -1,0 +1,64 @@
+---
+
+## Introduction
+
+“I Want To RAGE” was built during NUS Hack&Roll 2026 as a last-minute idea that somehow became our main project. The concept was simple: what if you could safely destroy your Google widgets when you’re stressed - without actually breaking anything?
+
+The inspiration came from stickman destruction animations on YouTube. I wanted to recreate that chaotic, over-the-top energy, but inside the browser. Instead of animating characters, I thought: why not let users tear apart the very UI elements they interact with daily ?
+
+The result is a Chrome web extension that converts Google widgets into destructible objects. Users can toggle a flamethrower mode, click to slice widgets in half, and physically throw them around the screen - all built using vanilla web technologies.
+
+---
+
+## Intuition
+
+- Browser extensions require careful DOM manipulation without breaking page functionality.
+
+- Widgets need to be extracted from the DOM while preserving visual fidelity.
+
+- Destruction mechanics require physics simulation and object state management.
+
+- Performance must remain stable despite rapid user input.
+
+- Some sites intentionally obscure class names to prevent scraping or manipulation.
+
+- Rendering destruction effects needs to avoid excessive DOM reflows.
+---
+
+## Process
+
+This project was built entirely with vanilla JavaScript, HTML, and CSS. No frameworks - just raw browser APIs. The hardest problem early on was figuring out how to make existing widgets “destructible.” Removing them directly from the DOM broke layout and caused visual glitches. I needed a way to visually detach them without breaking the page itself.
+
+The breakthrough was using HTML Canvas. Instead of manipulating the live DOM nodes directly, I used html2canvas to render widgets into bitmap images. Once converted into canvas-rendered objects, I could treat them like independent entities - positioned absolutely and animated freely. This created the illusion that the widgets were being “taken off the shelves.”.
+
+Targeting widgets was tricky. Some sites randomize class names or rely heavily on nested div structures to guard against scraping or bot manipulation. Relying purely on class selectors was unreliable. I had to build more resilient DOM traversal logic based on structure and hierarchy instead of fixed identifiers.
+
+For physics simulation, I integrated a lightweight library to create a playground-like environment where widgets could be thrown around realistically. Clicking a widget slices it in half - which required re-rendering the two split sections separately using html2canvas again. Each half becomes its own physics object.
+
+The flamethrower mode was an extra layer of state logic. Pressing F toggles between cursor and flamethrower. When active, holding click applies damage over time. Widgets are assigned health values, and their colors darken progressively before splitting apart once health reaches zero. Managing these state transitions without freezing the browser required careful throttling of event listeners.
+
+Performance is hardware-dependent. Rapid clicking can spawn too many canvas redraws and physics updates, which can degrade performance. While reloads typically resolve minor issues, it’s clear the rendering pipeline could be optimized further.
+
+---
+
+## What I Learned
+
+- Deep DOM manipulation without breaking layout integrity
+
+- Rendering DOM elements into canvas bitmaps using html2canvas
+
+- Managing object state and health systems in pure JavaScript
+
+- Handling performance bottlenecks caused by excessive event firing
+
+- Building physics-style interactions inside the browser
+
+- Designing browser extensions with safe fallbacks for restricted sites
+
+---
+
+## What's Next
+
+The biggest improvement area is performance optimization. Rapid interactions can overwhelm the canvas redraw cycle and physics engine. I’d like to implement better object pooling, input throttling, and possibly Web Workers to offload heavy calculations.
+
+I’d also refine widget targeting to be more adaptive across different Google surfaces. The core destruction mechanics work - but improving stability, smoothness, and compatibility would make it feel far more polished.

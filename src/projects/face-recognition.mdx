@@ -1,0 +1,126 @@
+---
+
+## Introduction
+
+During one of my university Java projects, my team and I built a modular face recognition attendance management system using Java, OpenCV, and ONNX (ArcFace).
+
+It was a full desktop application with authentication, session management, live recognition, reporting, and configuration controls.
+
+I was responsible for designing and implementing the entire reporting subsystem — including CSV, Excel, and PDF exports - as well as building a historical reports interface inside the dashboard.
+
+---
+
+## Recognition Pipeline
+
+The recognition flow looked like this:
+
+1: Camera feed captured via OpenCV
+
+2: Face detection
+
+3: Embedding generation using ArcFace (arcface.onnx)
+
+4: Similarity comparison against stored embeddings
+
+5: Attendance recorded into session database
+
+The architecture separated detection, embedding, and recognition logic into different services, which kept the system extensible.
+
+---
+
+## My Role: Building the Reporting System
+
+While others focused on recognition and session logic, I took ownership of everything related to reporting and exports.
+
+That meant building a system that could:
+
+- Generate structured attendance reports
+
+- Export in multiple file formats
+
+- Maintain historical logs
+
+- Provide a UI to browse past reports
+
+---
+
+## Designing the Export Layer
+
+I implemented three dedicated generators:
+
+- CSVGenerator
+
+- ExcelGenerator
+
+- PDFGenerator
+
+Each generator shared a common structured data input model (StudentData) so the business logic didn’t care about file format. That separation made the system clean and maintainable.
+
+**CSV Export**
+
+Lightweight and portable.
+Used for raw attendance data sharing.
+
+**Excel Export**
+
+Built using Apache POI.
+Formatted sheets with headers, structured columns, and proper data typing.
+
+**PDF Export**
+
+Designed for official attendance reports.
+Handled formatting, layout consistency, and summary sections.
+
+One of the key challenges was ensuring that:
+
+- All formats had consistent data mapping
+
+- Attendance summaries matched across exports
+
+- Edge cases (empty sessions, large rosters) were handled gracefully
+
+---
+
+## Building the Historical Reports Page
+
+Beyond exporting, I built a Reports History interface inside the dashboard.
+
+This page:
+
+- Logged every generated report
+
+- Stored metadata (timestamp, session, file type)
+
+- Displayed records in a JTable
+
+- Allowed users to regenerate or re-access reports
+
+To support this, I created:
+
+- ReportLog
+
+- Structured logging integration
+
+- Database persistence for report history
+
+This turned the reporting feature from a simple “export button” into something closer to enterprise-grade audit tracking.
+
+---
+
+## What I Learned
+
+This project taught me several things beyond just Java:
+
+- The importance of working with others teammates to cooridnate how the data is presented
+
+- The importance of separating business logic from output formats
+
+- How to design reusable service layers
+
+- How to think about auditability and report history
+
+- How real-world systems require more than just core functionality
+
+---
+
+

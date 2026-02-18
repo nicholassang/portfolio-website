@@ -1,0 +1,107 @@
+---
+
+## Introduction
+
+One of my earliest projects was a fun experiment I call Magic Of Pi.
+
+The idea was simple: estimate the value of π using a Monte Carlo simulation, and compare performance between vanilla JavaScript and C++ compiled to WebAssembly (WASM).
+
+I got inspired after seeing an Instagram reel showing how random sampling can estimate π - like throwing lines onto a plane and seeing how many intersect a circle. It looked magical, and I wanted to try it myself.
+
+---
+
+## Project Overview
+
+**Simulation:** Monte Carlo method to approximate π
+
+**Frontend:** Web interface showing live updates of the simulation
+
+**Performance Comparison:** JavaScript vs C++ WebAssembly
+
+**Tooling:**
+
+- C++ for the WASM logic
+
+- Emscripten & CMake to compile C++ to WebAssembly
+
+- JavaScript glue code to interact with the browser
+
+The goal was both educational and practical: see how much faster WASM could be compared to pure JS for computational tasks.
+
+---
+
+## Implementation Details
+
+**Monte Carlo Simulation**
+
+The simulation works like this:
+
+- Generate random (x, y) points inside a square
+
+- Count how many fall inside the inscribed circle
+
+- Estimate π using the ratio: 𝜋 ≈ 4× (points inside circle/total points)
+
+I implemented this in:
+
+- purejs_monte_carlo.js — for the vanilla JavaScript version
+
+- monte_carlo_pi.cpp → compiled to monte_carlo_from_wasm.js — for the WASM version
+
+**WebAssembly Integration**
+
+- C++ code compiled to WebAssembly using CMake & Emscripten
+
+- JS interacts with WASM functions via glue code
+
+- DOM updates show live π estimates on the web page
+
+Switching from pure JS to WASM gave significant performance gains, especially with large numbers of samples.
+
+---
+
+## Key Learnings
+
+This project taught me a lot about performance engineering:
+
+**WebAssembly is fast**
+
+- C++ compiled to WASM is noticeably faster than JS for heavy computations
+
+- This is why major tech companies use WASM for performance-critical browser tasks
+
+**CMake & Emscripten workflow**
+
+- Learned how to compile C++ to WASM for web applications
+
+- Understood linking, module exports, and integration with JS
+
+**Monte Carlo method is simple but powerful**
+
+- Randomness can approximate mathematical constants surprisingly accurately
+
+**Frontend + WASM integration**
+
+Glueing WASM to browser UI requires careful handling of data types and memory
+
+---
+
+## Lessons Learned
+
+BetterReadME taught me more than just CLI programming:
+
+- How to build a REPL loop in Python
+
+- How to structure a command-line workflow for usability
+
+- The practical limitations of offline machine learning models
+
+- That cloud or server-based translation exists for a reason
+
+- How to plan a project’s feasibility before implementation
+
+It was humbling - I went in thinking it was a tiny project, but it revealed the realities of storage constraints, user experience, and model size.
+
+Sometimes, the lessons from failure are more valuable than the success itself. This project is one of those lessons.
+
+---

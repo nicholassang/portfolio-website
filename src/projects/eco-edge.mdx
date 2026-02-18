@@ -1,0 +1,130 @@
+---
+
+## Introduction
+
+One of my modules at SMU partnered with an external client called EcoEdge.
+
+Our task sounded simple on paper:
+Build a system that simulates a wind turbine and streams real-time data to a dashboard.
+
+In reality, it became one of the most hands-on, hardware-heavy projects I’ve ever worked on — and the one that sparked my interest in embedded systems.
+
+---
+
+## System Architecture
+
+Our system had three major components:
+
+- **Arduino** – Captured raw sensor data
+
+- **Raspberry Pi** – Acted as a gateway and data transformer
+
+- **Dashboard** – Received data via MQTT for visualization
+
+The data flow looked like this:
+
+Physical Wind Turbine → Hall Effect Sensor → Arduino (C++) → Raspberry Pi (Python) → MQTT → Dashboard
+
+The Raspberry Pi was responsible for:
+
+- Receiving serial data from the Arduino
+
+- Transforming and calibrating the readings
+
+- Publishing structured messages via MQTT
+
+- Acting as the bridge between hardware and frontend
+
+---
+
+## The Wind Turbine & Hall Effect Sensor
+
+We physically built a makeshift wind turbine.
+
+To measure rotational speed, we used a Hall Effect sensor, which detects magnetic fields. By attaching a magnet to the rotating blade hub, each full rotation triggered a pulse.
+
+From there:
+
+- Count pulses
+
+- Measure time interval
+
+- Calculate RPM
+
+- Convert RPM → wind speed approximation
+
+Simple in theory. Painful in practice.
+
+---
+
+## My Role: Hardware & Embedded Programming
+
+I was primarily responsible for:
+
+- Circuit design and wiring
+
+- Arduino firmware (C++)
+
+- Raspberry Pi gateway logic (Python)
+
+- Sensor calibration
+
+- Debugging electrical issues
+
+---
+
+## Arduino (C++)
+
+On the Arduino side, I:
+
+- Handled interrupt-based pulse counting
+
+- Calculated rotational speed
+
+- Packaged readings for serial transmission
+
+- Optimized timing logic to reduce blocking
+
+Using interrupts instead of polling made the readings significantly more accurate and responsive.
+
+---
+
+## Raspberry Pi (Python)
+
+On the Raspberry Pi, I built the gateway layer:
+
+- Read serial data from Arduino
+
+- Applied calibration formulas
+
+- Structured the data into JSON
+
+- Published to MQTT broker
+
+- Ensured stable reconnection handling
+
+The Pi essentially turned raw electrical signals into clean, consumable cloud data.
+
+---
+
+## What I learned
+
+This project changed how I think about software.
+
+When you're writing backend code, you assume inputs are clean.
+
+In embedded systems, inputs are noisy, unstable, and sometimes just wrong.
+
+I learned:
+
+- Hardware debugging requires a different mindset
+
+- Timing matters more than you expect
+
+- Physical systems introduce real-world unpredictability
+
+- Clean architecture applies even to microcontrollers
+
+- Simplicity beats cleverness in embedded design
+
+

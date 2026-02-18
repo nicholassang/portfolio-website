@@ -1,0 +1,70 @@
+---
+
+## Introduction
+
+This project started as a simple experiment to learn web scraping. I just wanted to pull some movie data and understand how scraping pipelines worked end-to-end.
+
+But as I was building it, I realized the data itself was actually interesting. Instead of stopping at a CSV file, I decided to turn it into something visual — a dashboard that shows where the top 100 most popular movies on IMDb were filmed. I’ve always thought 3D globe visualizations on the web looked cool, so this felt like the perfect excuse to finally use one.
+
+The result is a full-stack application that scrapes IMDb every 6 hours via an automated ETL pipeline and visualizes filming locations on an interactive globe.
+
+---
+
+## Intuition
+
+- Dynamic websites require handling client-side JavaScript rendering.
+
+- A recurring ETL pipeline needs scheduling, logging, and failure recovery.
+
+- Data should be normalized and stored before visualization.
+
+- The backend must expose clean APIs for the frontend.
+
+- Deployment must support background jobs and container orchestration.
+
+- Separation of concerns: scraper, API server, and database should be isolated.
+---
+
+## Process
+
+I initially started with **BeautifulSoup**, assuming simple HTML parsing would be enough. That assumption quickly failed. IMDb pages rely heavily on dynamic JavaScript rendering, and some endpoints are protected against basic bots. Static scraping wasn’t reliable.
+
+I pivoted to **Selenium**, which allowed me to render JavaScript and interact with pages more realistically. Since IMDb is commonly used for beginner scraping projects, it was a good controlled environment to experiment with. I followed the site’s robots.txt and added a disclaimer clarifying that the data would not be used commercially or with ill intent.
+
+The scraping pipeline is written in **Python** using **FastAPI** for the backend API layer. I used APScheduler to run a cron job every 6 hours to keep the top 100 list current. The data is processed, cleaned, and stored before being exposed to the frontend.
+
+On the frontend, I built the UI with **React** and **TypeScript**, using globe.gl to render filming locations on a 3D globe. The visualization layer was surprisingly straightforward compared to the scraping logic. Most of the complexity lived in the data pipeline, not the UI.
+
+Deployment was a learning curve. This was my first time deploying to **AWS Lightsail**, and I chose to containerize everything using **Docker** and **Docker Compose**. I split the services into separate containers (app + database), added **Nginx** as a reverse proxy, and configured SSL with **Certbot**.
+
+However, I ran into portability issues. I developed on Windows, and some naming conventions and filesystem assumptions didn’t translate cleanly to Linux. I had to refactor paths and container configurations to make everything Linux-compatible.
+
+Two weeks after deployment, the site went down. After hours of debugging, I discovered the Linux server disk was full. Docker had accumulated multiple images and container layers because the scraper was running every 6 hours. The fix was embarrassingly simple: clear unused Docker images and reduce the scraping frequency to once a week. It was a painful but valuable lesson in infrastructure awareness.
+
+---
+
+## What I Learned
+
+- Handling dynamic scraping with Selenium over static parsers
+
+- Importance of logging and structured error handling in ETL pipelines
+
+- Designing APIs with FastAPI for clean frontend consumption
+
+- Scheduling background jobs using APScheduler
+
+- Container orchestration with Docker Compose
+
+- Reverse proxy and SSL setup using Nginx and Certbot
+
+- Deployment and server management on AWS Lightsail
+
+- Monitoring disk usage and managing Docker image bloat
+
+---
+
+## What's Next
+
+If I were to revisit this project, I would prioritize observability. Proper logging, alerting, and monitoring would have saved me hours of debugging when the server went down. I’d also implement automated Docker cleanup policies and better resource tracking.
+
+On the product side, I’d expand beyond the top 100 movies and add filtering, historical trends, or even heatmaps of filming density. The visualization layer has room to grow - both in performance and interactivity — but the foundation is solid.

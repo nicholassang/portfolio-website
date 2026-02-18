@@ -1,0 +1,174 @@
+---
+
+## Introduction
+
+Unify started with a simple idea:
+
+University students are always planning things - study sessions, project meetings, dinners, events - but coordination is messy.
+
+So we built Unify, a social calendar platform that allows students to:
+
+- Create and manage personal calendars
+
+- Share calendars publicly
+
+- Follow other users’ calendars
+
+- View and manage events in one unified interface
+
+This project was built using the PERN stack:
+
+- PostgreSQL
+
+- Express
+
+- React
+
+- Node.js
+
+Deployed with:
+
+- Client → Vercel
+
+- Server → Render
+
+- Database → Supabase
+
+I was the team lead for this project.
+
+And I was responsible for building the calendar system. 
+
+---
+
+## My Role: The Calendar System
+
+The calendar was the heart of the app - and also the most difficult component.
+
+Core Features I Implemented
+
+- Drag-and-drop events
+
+- Multi-calendar toggling
+
+- Event creation and modification
+
+- Recurring events
+
+- Date-time handling (With help from my friend)
+
+- Calendar filtering
+
+- Event persistence with PostgreSQL
+
+- Drag & Drop Behavior
+
+- Events could be dragged to a new date.
+
+The drop date would override the event’s start date entirely — regardless of which part of the event block was dragged.
+
+That sounds simple, but it wasn’t.
+
+---
+
+## The Harsh Truth About Calendar Apps
+
+There’s an age-old saying:
+
+*Never make a calendar app your main project.*
+
+I understand why now.
+
+Calendar systems are deceptively complex because of:
+
+- Time zones
+
+- Recurring events
+
+- Start/end synchronization
+
+- Date formatting inconsistencies
+
+- Backend–frontend time serialization
+
+- Daylight savings edge cases
+
+And the ROI?
+Low.
+
+Calendars have already been built extremely well by companies with entire teams dedicated to solving these problems.
+
+But building one from scratch taught me more about time handling than any mod ever could.
+
+---
+
+## Deployment Lessons
+
+This project was also my first real deployment experience.
+
+**Frontend → Vercel**
+**Backend → Render**
+**Database → Supabase**
+
+One important lesson:
+
+Render’s hobby tier spins down after inactivity.
+
+That meant:
+
+- First request could take up to 50 seconds
+
+- Login appeared “broken”
+
+- Users needed patience
+
+This was my first exposure to real-world infrastructure limitations.
+
+It taught me:
+
+- Cold starts are real
+
+- Deployment environments behave differently from localhost (which was frustrating)
+
+---
+
+## Being Team Lead
+
+Technically, I was team lead.
+
+But I was lucky - my team was friendly, collaborative, and genuinely enjoyable to work with.
+
+Instead of managing chaos, I focused on:
+
+- Coordinating tasks
+
+- Setting milestones
+
+- Ensuring backend–frontend alignment
+
+- Maintaining consistent data models
+
+It didn’t feel stressful. It felt fun.
+
+---
+
+## What I Learned
+
+This project taught me:
+
+- Time is one of the hardest data types in software
+
+- State management in UI is non-trivial
+
+- Backend and frontend must agree precisely on date formats
+
+- Recurring logic is far more complex than it appears
+
+Most importantly:
+
+- I learned that difficulty does not always equal uniqueness.
+
+- Calendars are hard — but they’re not differentiated products.
+
+- Still, the experience of building one from scratch was incredibly valuable.
+
+---
