@@ -103,7 +103,7 @@ const ProjectDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
 
         {/* MDX Content */}
-        <div className="lg:col-span-3 ml-25">
+        <div className="lg:col-span-3 ml-6">
           <h1 className="text-4xl font-bold mb-6">
             {project.title}
           </h1>
