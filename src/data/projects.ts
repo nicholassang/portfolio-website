@@ -101,7 +101,7 @@ const projects: Project[] = [
   {
     title: "BetterReadME",
     slug: "better-readme",
-    description: "A multi-anguage supported CLI too, that generates ReadMe files for you.",
+    description: "A multi-language supported CLI tool, that generates ReadMe files for you.",
     image: "better-readme.png",
     MDXComponent: betterreadmeMDX,
     github: "https://github.com/nicholassang/BetterReadME",
