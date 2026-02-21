@@ -9,7 +9,7 @@ const ResumeButton = () => {
 
   return (
     <a
-        href="/Nicholas%20Ang%20-%20Resume.pdf"       
+        href="/Nicholas%20Ang%20-%20Resume1.pdf"       
         download
         className={`text-xs fixed bottom-20 left-6 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 transition-transform duration-300 hover:scale-105 z-50`}
         style={{
