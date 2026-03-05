@@ -140,7 +140,7 @@ const SkillsSection = () => {
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.3 }}
-                          className="text-sm text-gray-700 dark:text-gray-300 mt-1"
+                          className="text-sm mt-1"
                         >
                           {skill.details}
                         </motion.div>
