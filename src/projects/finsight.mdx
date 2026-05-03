@@ -1,0 +1,209 @@
+## Introduction
+
+FinSight was a project focused on building a **retrieval-augmented generation (RAG)** system over official financial filings.
+
+Instead of working with general web data, we constrained the system strictly to Microsoft’s SEC filings (10-K and 10-Q reports). The goal was simple:
+
+**Answer financial questions accurately using only verifiable, structured source documents.**
+
+What made this project interesting was not just building a RAG system — but systematically comparing seven different pipeline designs (V0–V6) to understand how each component affects performance.
+
+---
+
+## Motivation
+
+Most RAG systems are built as a single pipeline:
+
+> retrieve → generate
+
+But in reality, there are many design choices:
+
+- Dense vs sparse retrieval  
+- Hybrid search  
+- Reranking  
+- Query rewriting  
+- Metadata filtering  
+- Context compression  
+
+Instead of guessing what works best, we treated this as a controlled experiment.
+
+Each pipeline variant introduced a specific improvement over the previous one, allowing us to measure:
+
+- Accuracy  
+- Faithfulness  
+- Retrieval quality  
+- Latency tradeoffs  
+
+---
+
+## Pipeline Variants
+
+We implemented and evaluated seven variants:
+
+- **V0 (LLM-only)** — No retrieval, pure generation (hallucination baseline)  
+- **V1 (Baseline)** — Dense retrieval → generation  
+- **V2** — Dense retrieval → reranking → generation  
+- **V3** — Hybrid (BM25 + dense) → RRF fusion → rerank → generate  
+- **V4** — Query rewriting → hybrid → rerank → generate  
+- **V5** — Metadata filtering → dense → generate  
+- **V6** — Hybrid → rerank → context compression → generate  
+
+Each variant isolates a specific idea, making it easier to understand *why* performance improves (or doesn’t).
+
+---
+
+## System Architecture
+
+The system follows a modular pipeline design:
+
+- **Ingestion Layer**
+  - Parses SEC PDFs
+  - Cleans and structures text
+  - Adds fiscal metadata (year, quarter)
+
+- **Chunking Layer**
+  - Fixed-size and semantic chunking strategies
+  - Metadata tagging for retrieval filtering
+
+- **Indexing Layer**
+  - Dense index using vector embeddings (ChromaDB)
+  - Sparse index using BM25
+
+- **Retrieval Layer**
+  - Dense, sparse, and hybrid retrieval
+  - Reciprocal Rank Fusion (RRF)
+  - Cross-encoder reranking
+
+- **Generation Layer**
+  - LLM-based answer generation
+  - Citation formatting
+  - Guardrails (e.g. requiring sources)
+
+- **Application Layer**
+  - Streamlit UI for interactive querying
+  - CLI tools for testing and benchmarking
+
+This separation made it easy to experiment with different pipeline combinations.
+
+---
+
+## My Team: Data & Retrieval
+
+I have to thank for teammates for looking into most of the code. They focused on the data and retrieval side of the system, which formed the backbone of the pipelines.
+
+Responsibilities included:
+
+- Designing chunking strategies
+- Implementing both:
+  - Dense retrieval (vector search)
+  - Sparse retrieval (BM25)
+- Creating the **hybrid retrieval system** using RRF fusion
+- Implementing **metadata-aware filtering** for fiscal queries
+- Running ingestion and generating processed datasets and indexes
+
+---
+
+## Key Challenges
+
+### 1. Financial Documents Are Hard to Parse
+
+SEC filings are not clean text:
+
+- Dense tables  
+- Long paragraphs  
+- Repeated boilerplate sections  
+
+Extracting meaningful chunks required careful cleaning and structuring.
+
+---
+
+### 2. Retrieval ≠ Relevance
+
+Initial dense retrieval often returned:
+
+- Semantically similar text  
+- But not numerically relevant answers  
+
+This became obvious in financial queries where **exact figures matter**.
+
+Hybrid retrieval (BM25 + dense) helped balance:
+
+- Semantic similarity  
+- Keyword precision  
+
+---
+
+### 3. Reranking Tradeoffs
+
+Adding a cross-encoder reranker improved relevance - but introduced latency.
+
+We had to balance:
+
+- Better answers  
+- Slower response times  
+
+This tradeoff became very visible across variants.
+
+---
+
+### 4. Metadata Matters More Than Expected
+
+Financial queries are highly time-dependent:
+
+> “What was revenue in FY2024?”
+
+Without filtering by fiscal period, retrieval could return correct values - but from the wrong year.
+
+Metadata filtering (V5) significantly improved accuracy for these queries.
+
+---
+
+## Evaluation Approach
+
+We built a structured evaluation pipeline:
+
+- 20-question benchmark dataset  
+- Multiple query categories (numerical, comparative, descriptive, etc.)  
+- RAGAS-based evaluation metrics  
+- GPT-based judging for answer quality  
+
+We also implemented:
+
+- Retrieval ablation studies  
+- Category-level performance analysis  
+- Latency breakdowns per pipeline stage  
+
+This made the project feel closer to a research experiment than a typical application.
+
+---
+
+## What I Learned
+
+This project gave me a much deeper understanding of RAG systems beyond surface-level implementation.
+
+Key takeaways:
+
+- Retrieval quality matters more than model choice  
+- Dense embeddings alone are not enough for structured data  
+- Hybrid retrieval is often necessary in real-world scenarios  
+- Metadata can dramatically improve accuracy  
+- Reranking improves results but adds latency  
+- Evaluation frameworks are essential - intuition is unreliable  
+
+It also showed me that:
+
+> A “working” RAG system is very different from a **reliable** one.
+
+---
+
+## Final Thoughts
+
+FinSight was one of the most structured projects I’ve worked on.
+
+Instead of building a single solution, we explored a **design space of systems** - and measured the impact of each decision.
+
+It reinforced an important idea:
+
+**RAG is not one technique - it is a pipeline of tradeoffs.**
+
+I also am grateful for my teammates who guided us through the complex nature of RAG.

@@ -1,0 +1,164 @@
+## Introduction
+
+This project was part of a database systems module where we were tasked to build a specialized processor for a single TPC-H query.
+
+My teammate and I chose TPC-H Query 13 primarily because of its relative simplicity compared to other benchmark queries. While many teams selected more complex queries, we wanted to explore a different idea:
+
+**How fast can a system become if you aggressively optimize for one known query?**
+
+Instead of building a general-purpose SQL engine, we built a highly specialized processor designed specifically for Query 13 over Parquet files.
+
+---
+
+## Understanding TPC-H Query 13
+
+TPC-H Query 13 is conceptually simple, but inefficient when executed using traditional query engines.
+
+A standard execution typically involves:
+
+- Left outer join between `customer` and `orders`
+- Grouping by customer
+- Counting qualifying orders
+- Grouping again into count buckets
+- Final sorting
+
+This creates large intermediate results and multiple aggregation phases.
+
+For a general-purpose engine, this is expected.
+
+For a specialized processor, it is unnecessary.
+
+---
+
+## Optimization Strategy
+
+Instead of following the standard execution plan, we restructured the query logic entirely.
+
+Our engine executes Query 13 as:
+
+1.Load all customers and initialize per-customer counts to 0  
+2. Scan `orders.parquet`  
+3. Apply filter:  `o_comment NOT LIKE '%special%requests%'`  
+4. Increment qualifying customer counts directly  
+5. Build histogram (`c_count → custdist`)  
+6. Sort final output  
+
+This preserves the exact semantics of Query 13 while avoiding:
+
+- Join intermediates  
+- Hash joins  
+- First-stage aggregations  
+
+The key idea:
+
+> If the query is fixed, you can remove the need for a general-purpose execution pipeline.
+
+---
+
+## Implementation
+
+### Python Engine
+
+The Python implementation served as the main prototype.
+
+Built with:
+
+- Python  
+- PyArrow  
+- Parquet readers  
+
+Function:
+
+- Loaded customer keys into dense count storage  
+- Streamed only required columns (`o_custkey`, `o_comment`)  
+- Applied string filtering  
+- Incremented counters directly  
+- Built final histograms  
+
+Additional features:
+
+- Benchmark mode  
+- Stage-level timing logs  
+- Scale-factor support  
+
+This version allowed rapid iteration and testing of optimization ideas.
+
+---
+
+### Native C++ Implementation
+
+To push performance further, we implemented a native C++ version.
+
+Built with:
+
+- C++  
+- Apache Arrow / Parquet  
+
+Function:
+
+- Streamed record batches directly  
+- Performed filtering and counting in a tight loop  
+- Maintained identical semantics to the Python version  
+- Produced comparable benchmark logs  
+
+This allowed us to evaluate:
+
+- Python vs native performance  
+- Execution overhead differences  
+- Performance relative to DuckDB  
+
+---
+
+## What I Found Interesting
+
+This project exposed me to the database side of an application, looking into querying and different database concepts like bloom filters or indexing.
+
+That introduced concepts I hadn’t explored deeply before:
+
+- Query execution planning  
+- Columnar data processing  
+- Data locality  
+- Latency optimization  
+- Specialized preprocessing  
+
+It also made it clear why databases are complex:
+
+> Generality comes at the cost of performance. There are multiple ways of optimising for different contexts under different constraints.
+
+---
+
+## Lessons Learned
+
+- Query optimization is often about avoiding unnecessary work  
+- General-purpose systems trade speed for flexibility  
+- Columnar storage (Parquet) is highly efficient for analytics  
+- Specialized processors can outperform traditional engines under constraints  
+- Benchmarking is essential when working on systems performance  
+
+More importantly, this project gave me exposure to systems-level thinking:
+
+- Memory access patterns  
+- Batch processing  
+- Execution overhead  
+- Latency tradeoffs  
+
+---
+
+## If I Revisited This Project
+
+If I had more time, I would explore:
+
+- SIMD optimizations for string filtering  
+- Parallel scanning of orders (which was banned for our project)
+- Memory-mapped file access  
+- More aggressive preprocessing strategies  
+
+It would also be interesting to benchmark against more engines beyond DuckDB to better understand where specialized execution begins to outperform general-purpose systems.
+
+---
+
+This project reinforced a few key ideas in systems engineering:
+
+**Performance often comes from removing generality.**
+
+**Optimization depends on context.**

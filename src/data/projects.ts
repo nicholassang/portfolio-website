@@ -7,6 +7,11 @@ import heapsUnifyMDX from "../projects/heaps-unify.mdx";
 import schoolfinderzMDX from "../projects/schoolfinderz.mdx";
 import betterreadmeMDX from "../projects/better-readme.mdx";
 import magicOfPiMDX from "../projects/magic-of-pi.mdx";
+import odoodeploymentMDX from "../projects/odoo-deployment.mdx";
+import artstudiocafeMDX from "../projects/art-studio-cafe.mdx";
+import tpchq13MDX from "../projects/tpch-q13.mdx";
+import finsightMDX from "../projects/finsight.mdx";
+import brainbotMDX from "../projects/brainbot.mdx";
 
 interface Project {
   title: string;
@@ -52,6 +57,61 @@ const projects: Project[] = [
     github: "https://github.com/nicholassang/iwanttorage",
     website: "",
     skills: ["Javascript", "HTML2 Canvas"],
+    year: 2026
+  },
+  {
+    title: "[IS214] Azure Kubernetes Odoo Deployment",
+    slug: "is214-azure-kubernetes-odoo-deployment",
+    description: "CI/CD of an Odoo system deployment on Azure Kubernetes Service, including scaling and monitoring",
+    image: "esm-odoo.png",
+    MDXComponent: odoodeploymentMDX,
+    github: "https://github.com/nicholassang/IS214-e08g04t07-odoo17",
+    website: "",
+    skills: ["Azure Kubernetes", "Azure DevOps", "Azure CLI", "Docker", "Docker Compose"],
+    year: 2026
+  },
+  {
+    title: "[IS213] Art Studio Cafe Booking System",
+    slug: "is213-art-studio-cafe-booking-system",
+    description: "A microservice architecture project on a booking system for an art studio cafe",
+    image: "art-cafe.png",
+    MDXComponent: artstudiocafeMDX,
+    github: "https://github.com/nicholassang/IS213-Art-Studio-Cafe-Booking-Microservice",
+    website: "",
+    skills: ["RabbitMQ", "Kong API Gateway", "FastAPI", "Python", "Docker", "AWS EC2", "PostgreSQL"],
+    year: 2026
+  },
+  {
+    title: "[CS465] TPCH Q13 Specialised Preprocessor",
+    slug: "cs465-specialised-preprocessor",
+    description: "A specialised preprocessor for TPCH Q13, competing against DuckDb",
+    image: "tpch-q13.png",
+    MDXComponent: tpchq13MDX,
+    github: "https://github.com/nicholassang/IS465-TPCH-Q13-Specialised-Preprocessor",
+    website: "",
+    skills: ["Python", "C++", "DuckDB"],
+    year: 2026
+  },
+  {
+    title: "[IS469] Finsight",
+    slug: "is469-finsight",
+    description: "A RAG application on financial data for Microsoft Corporation SEC filings",
+    image: "finsight.png",
+    MDXComponent: finsightMDX,
+    github: "https://github.com/nicholassang/IS469-Finsight-Project",
+    website: "https://finsight-project-is469.vercel.app/",
+    skills: ["RAG", "Python", "Ollama", "OpenAI", "StreamLit"],
+    year: 2026
+  },
+  {
+    title: "[CS203] Brainbot",
+    slug: "cs203-brainbot-gen-alpha-slang-learning-platform",
+    description: "A SpringBoot Gen Alpha Slang Learning Platform with educational content using Agile Methodology",
+    image: "brainbot.png",
+    MDXComponent: brainbotMDX,
+    github: "https://github.com/nicholassang/CS203-BrainBot",
+    website: "",
+    skills: ["SpringBoot", "Java"],
     year: 2026
   },
   {

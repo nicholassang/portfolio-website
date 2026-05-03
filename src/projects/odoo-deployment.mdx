@@ -1,0 +1,190 @@
+## Introduction
+
+This project was part of an Azure-focused module where we were tasked with deploying and managing an Odoo system using Kubernetes on Azure.
+
+The initial goal was not just deployment, but to build a full DevOps pipeline around it, incorporating CI/CD practices, monitoring, and security tooling.
+
+We aimed to treat this as a production-grade setup rather than a simple deployment exercise.
+
+---
+
+## Initial Vision
+
+Our intended architecture included:
+
+- Azure Kubernetes Service (AKS) for orchestration  
+- Azure DevOps for CI/CD pipelines  
+- Docker for containerization  
+- GitOps-style deployment workflow  
+- Trivy for container security scanning  
+- Grafana for monitoring and observability  
+
+The idea was to simulate a modern cloud-native deployment pipeline with proper DevSecOps practices.
+
+---
+
+## Constraints
+
+We were working under the Azure student free tier, which imposed significant limitations:
+
+- Maximum of 3 VMs  
+- Limited total vCPU capacity (6 vCPUs total)  
+- Restricted access to certain Azure features  
+- Resource constraints when running multiple services simultaneously  
+
+These constraints had a direct impact on system design decisions.
+
+---
+
+## Implementation Approach
+
+We began by attempting to build the full CI/CD pipeline:
+
+- Automated builds using Azure DevOps  
+- Docker image creation and deployment  
+- Security scanning using Trivy  
+- Deployment to AKS  
+- Monitoring setup using Grafana  
+
+However, as the system complexity increased, resource limitations became a major bottleneck.
+
+Running multiple components simultaneously on limited infrastructure made it difficult to maintain stability during testing.
+
+---
+
+## Challenges
+
+### 1. Infrastructure Constraints
+
+The biggest limitation was the restricted Azure student environment.
+
+With only a small number of VMs and limited compute resources, we frequently ran into:
+
+- Resource exhaustion  
+- Deployment instability  
+- Inability to run all services concurrently  
+
+This made it difficult to validate the full intended architecture.
+
+---
+
+### 2. CI/CD Complexity
+
+Setting up a complete CI/CD pipeline with multiple tools introduced a steep learning curve:
+
+- Azure DevOps pipeline configuration  
+- Kubernetes deployment synchronization  
+- Image scanning integration with Trivy  
+- Managing deployment states across environments  
+
+Each layer added complexity that required coordination across the system.
+
+---
+
+### 3. Scope vs Feasibility
+
+As the project progressed, it became clear that the original vision was too large for the available resources and time.
+
+Maintaining all planned components simultaneously was not feasible under the constraints.
+
+---
+
+## Outcome
+
+In the end, we simplified the system:
+
+- Successfully deployed Odoo on Azure Kubernetes Service  
+- Prioritized core functionality over full DevOps feature integration  
+- Dropped advanced components such as full GitOps workflow, Trivy integration, and Grafana monitoring  
+
+While the final system was more minimal than originally planned, it remained functional and stable within the constraints.
+
+---
+
+## My Role
+
+I was involved in:
+
+- Designing the initial CI/CD pipeline architecture  
+- Exploring Azure DevOps integration  
+- Attempting to implement monitoring and security tooling  
+- Working on Kubernetes deployment configuration  
+- Debugging deployment issues within AKS  
+
+A significant portion of my effort went into trying to align the ideal architecture with real-world constraints.
+
+---
+
+## Key Learnings
+
+### 1. Cloud Constraints Are Real Design Constraints
+
+Working within free-tier limitations showed that:
+
+- Infrastructure is not infinite  
+- Design decisions must account for resource availability  
+- Ideal architectures often need simplification in practice  
+
+---
+
+### 2. Scope Management is Critical
+
+One of the most important lessons was understanding when to reduce scope.
+
+Trying to implement everything (CI/CD, monitoring, security, GitOps) in one system under limited resources was not sustainable.
+
+---
+
+### 3. Teamwork Matters More in Distributed Systems
+
+This project reinforced the importance of collaboration.
+
+While I focused heavily on CI/CD and deployment aspects, my teammates contributed across different parts of the project and helped ensure steady progress even when the full architecture could not be realised.
+
+It highlighted that:
+
+- No single developer can realistically own everything in a complex system  
+- Progress often comes from dividing responsibilities effectively  
+
+---
+
+### 4. Burnout and Real-World Engineering Pressure
+
+This was one of the more intense projects I worked on.
+
+Trying to push an “ideal” architecture within constrained conditions led to frustration and eventual burnout during the implementation phase.
+
+However, it also became a valuable learning experience about:
+
+- Managing expectations  
+- Knowing when to pivot  
+- Accepting partial success as a valid outcome  
+
+---
+
+## Acknowledgements
+
+I would like to thank my teammates for their contributions across different parts of the project:
+
+- <b><a href="https://github.com/cay68" target="_blank" rel="noopener noreferrer">cay68</a></b> — helping with the main proposal  
+- <b><a href="https://github.com/leeshel" target="_blank" rel="noopener noreferrer">leeshel</a></b> — slides and video editing  
+- <b><a href="https://github.com/Sam-SE23" target="_blank" rel="noopener noreferrer">Sam-SE23</a></b> — slides and SDD documentation  
+- <b><a href="https://github.com/theejer" target="_blank" rel="noopener noreferrer">theejer</a></b> — aiding in Kubernetes deployment  
+- <b><a href="https://github.com/yasml-9" target="_blank" rel="noopener noreferrer">yasml-9</a></b> — documentation and slides   
+
+Each contribution helped move the project forward, especially when we had to adapt our original architecture under tight constraints.
+
+---
+
+## Final Thoughts
+
+Although we did not fully achieve the original CI/CD vision, the project still provided meaningful experience in:
+
+- Kubernetes deployment on Azure  
+- Cloud infrastructure limitations  
+- DevOps pipeline design  
+- Team-based system implementation  
+
+More importantly, it taught me a practical lesson:
+
+Sometimes engineering is not about building the perfect system, but building the best possible system within real constraints.

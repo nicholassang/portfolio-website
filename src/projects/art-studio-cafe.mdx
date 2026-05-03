@@ -1,0 +1,286 @@
+## Introduction
+
+Art Studio Cafe is a microservice-based web platform designed around a complete user journey:
+
+Discover activities -> book time slots -> add food and drinks -> complete payment -> receive confirmations.
+
+Instead of building a monolithic system, this project was designed to explore how a real-world application can be decomposed into independent services, each responsible for a specific business capability.
+
+The system also includes an AI-assisted recommendation flow to guide users toward activities that match their preferences.
+
+---
+
+## System Overview
+
+The platform is structured as a full-stack microservices system with:
+
+- React frontend  
+- Kong API Gateway as the only public entrypoint  
+- Multiple FastAPI microservices and composite services  
+- RabbitMQ for asynchronous communication  
+- Postgres with database-per-service ownership  
+
+At a high level, the user flow is:
+
+- Browse or discover activities  
+- Select a valid booking slot  
+- Add food or drinks  
+- Submit payment  
+- Receive booking confirmation  
+- Manage bookings  
+
+---
+
+## Architecture
+
+### Public Request Flow
+
+Frontend (React)  
+→ Kong API Gateway  
+→ Downstream services and composite services  
+
+Kong acts as the single entrypoint, routing requests to the appropriate services.
+
+---
+
+### Microservice Design
+
+The system is decomposed into:
+
+- Core services (user, activity, menu, food order, quiz)  
+- Composite services:
+  - make-booking-composite-service  
+  - ai-recommender-composite-service  
+- Wrappers for external integrations:
+  - payment-wrapper  
+  - ai-recommendation-wrapper  
+- Notification service for email delivery  
+
+Each service owns its own database, following a database-per-service pattern.
+
+---
+
+### Event-Driven Communication
+
+RabbitMQ is used for asynchronous workflows.
+
+Example:
+
+- Booking is created  
+- Event is published  
+- notification-service consumes the event  
+- Confirmation email is sent  
+
+This decouples booking logic from notification delivery and improves system resilience.
+
+---
+
+## My Role
+
+I focused on infrastructure, backend orchestration, and service ownership.
+
+### Kong API Gateway
+
+- Implemented Kong as the single public entrypoint  
+- Configured routing rules for all service endpoints  
+- Ensured clean separation between frontend and backend services  
+- Simplified client interaction by hiding internal service complexity  
+
+---
+
+### Dockerization
+
+- Containerized all services using Docker  
+- Configured Docker Compose for local orchestration  
+- Ensured consistent environments across development and deployment  
+
+This made it easier to manage multiple services and their dependencies.
+
+---
+
+### Deployment (AWS EC2)
+
+- Deployed the full system on AWS EC2  
+- Managed service startup and networking  
+- Debugged deployment issues related to containers and routing  
+
+This was one of my first experiences deploying a multi-service system, which introduced challenges beyond single-service deployments.
+
+---
+
+### Service Ownership
+
+I was in charge of several key services:
+
+#### Notification Service
+
+- Implemented email notification flow  
+- Integrated Resend API for email delivery  
+- Connected RabbitMQ events to email triggers  
+- Ensured booking confirmations were delivered asynchronously  
+
+---
+
+#### User Service
+
+- Handled authentication and user-related operations  
+- Managed session and profile logic  
+
+---
+
+#### Make-Booking Composite Service
+
+- Orchestrated the full booking workflow:
+  - Activity validation  
+  - Slot availability checks  
+  - Food order coordination  
+  - Payment integration  
+  - Booking persistence  
+- Coordinated multiple services into a single transaction-like flow  
+
+This service was central to the entire system, as it connected multiple independent services into a cohesive user experience.
+
+---
+
+## Development Process
+
+This project was built in a team environment with a focus on collaboration.
+
+We worked across multiple services simultaneously, which required:
+
+- Clear service boundaries  
+- Defined API contracts  
+- Coordination between frontend and backend teams  
+
+Working on a microservice architecture meant that changes in one service could affect others, so communication and planning were important.
+
+---
+
+## Key Features
+
+### Booking Flow
+
+- End-to-end booking process  
+- Slot validation and availability checks  
+- Food and drink integration  
+- Payment handling  
+- Asynchronous confirmation via email  
+
+---
+
+### Recommendation System
+
+- AI-driven recommendation flow  
+- Personality quiz based on user responses  
+- Analysis of user preferences to suggest activities  
+
+This feature was developed by my teammates and added a personalized layer to the platform.
+
+---
+
+### Service-Based Data Ownership
+
+- Each service manages its own database  
+- Independent schemas and initialization scripts  
+- Clear separation of concerns  
+
+---
+
+## Challenges
+
+### 1. Managing Service Complexity
+
+Compared to monolithic systems, microservices introduced:
+
+- More moving parts  
+- Inter-service communication challenges  
+- Increased debugging complexity  
+
+Understanding how services interact was one of the main challenges.
+
+---
+
+### 2. Orchestrating Distributed Workflows
+
+The booking process required coordination across multiple services.
+
+Handling:
+
+- Partial failures  
+- Ordering of operations  
+- Data consistency  
+
+was more complex than a single-database system.
+
+---
+
+### 3. Asynchronous Communication
+
+Using RabbitMQ introduced new considerations:
+
+- Event design  
+- Message reliability  
+- Debugging asynchronous flows  
+
+While powerful, it required a different mindset compared to synchronous APIs.
+
+---
+
+### 4. Deployment Complexity
+
+Deploying multiple services on EC2 required:
+
+- Managing containers  
+- Handling networking between services  
+- Debugging issues that did not appear locally  
+
+---
+
+## What I Learned
+
+- How microservice architectures differ from monolithic systems  
+- Designing systems around service boundaries  
+- Using Kong as an API gateway to manage routing  
+- Containerizing applications with Docker  
+- Handling asynchronous workflows with RabbitMQ  
+- Integrating third-party services like email APIs  
+- Coordinating development across multiple services  
+
+This project also reinforced the importance of:
+
+- Clear architecture design  
+- Service isolation  
+- Communication between team members  
+
+---
+
+## Team Contributions
+
+This was a collaborative project.
+
+My teammates contributed:
+
+- AI personality quiz and recommendation logic  
+- Frontend experience and UI  
+- Additional service implementations  
+
+These contributions added personalization and usability to the system.
+
+---
+
+## If I Revisited This Project
+
+If I had more time, I would focus on:
+
+- Adding centralized logging and monitoring  
+- Improving service observability  
+- Implementing better error handling across services  
+- Introducing CI/CD pipelines for automated deployment  
+
+---
+
+## Final Thoughts
+
+This project was a strong introduction to building and deploying a microservice-based system.
+
+It highlighted the tradeoffs between flexibility and complexity, and showed how real-world systems require coordination across multiple independent components.

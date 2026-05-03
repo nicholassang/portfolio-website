@@ -1,0 +1,273 @@
+## Introduction
+
+BrainBot was a full-stack project built around a simple idea:
+
+Learning slang shouldn’t feel like reading a dictionary.
+
+Instead of static definitions, we designed a platform that feels closer to a live learning experience, combining structured lessons, social features, games, and an in-app assistant.
+
+The goal was to make learning interactive, social, and replayable, rather than something users do once and forget.
+
+---
+
+## Product Inspiration
+
+The design of BrainBot was influenced by two main ideas:
+
+- The structured learning progression seen in platforms like Duolingo  
+- The community-driven content model of Urban Dictionary  
+
+From Duolingo, we adopted the concept of a **learning tree**, where users progress through lessons in a guided and incremental way. This helps structure learning instead of leaving it completely open-ended.
+
+From Urban Dictionary, we took inspiration for a **community contribution system**, where users can submit slang entries, including definitions, examples, and origins.
+
+To ensure content quality, we implemented a **moderation workflow**:
+
+- Users can submit new slang entries  
+- Moderators review and approve submissions  
+- Only approved entries are published to the main dictionary  
+
+This balances openness with reliability, preventing low-quality or incorrect content from entering the system.
+
+---
+
+## Product Vision
+
+Most slang platforms are passive:
+
+- Search a word  
+- Read the meaning  
+- Leave  
+
+We wanted something more engaging.
+
+BrainBot was designed around five core experiences:
+
+- Learn — structured lessons and progression  
+- Explore — community-driven slang dictionary  
+- Play — games like Slangle and quizzes  
+- Socialize — friends, rankings, and competition  
+- Assist — an AI assistant for contextual help  
+
+The result is a system where users don’t just consume content, but continuously interact with it.
+
+---
+
+## System Architecture
+
+The system is split into two main components:
+
+### Frontend
+- React (Vite)
+- React Router
+- UI libraries (Lottie, Lucide)
+
+### Backend
+- Java 21
+- Spring Boot
+- Spring Web MVC
+- Spring Data JPA
+- PostgreSQL / H2
+
+The backend was built using Spring Boot, exposing RESTful APIs that handled all application logic, including user progress, dictionary data, moderation workflows, and gameplay interactions.
+
+For deployment:
+
+- AWS Kubernetes hosted the application  
+- Nginx reverse proxy handled routing in containerized environments  
+- Backend services were kept internal while the frontend remained publicly accessible  
+
+---
+
+## My Role
+
+I focused on backend development using Spring Boot, as well as deployment.
+
+### Backend Contributions (Spring Boot)
+
+- Designed and optimized APIs for the learning path system  
+- Implemented logic for:
+  - Lesson progression  
+  - Mastery tracking  
+  - Flashcard workflows  
+- Structured database entities and relationships using JPA  
+- Expanded the slang dictionary to support richer data:
+  - Definitions, examples, and origins  
+  - Improved organization for retrieval and display  
+- Supported moderation workflows for contributed slang entries  
+
+---
+
+### Testing (Mockito)
+
+To ensure backend reliability, we implemented unit testing using Mockito.
+
+- Wrote unit tests for service-layer logic  
+- Mocked repository and dependency layers to isolate business logic  
+- Verified correctness of:
+  - Learning progression updates  
+  - Mastery tracking calculations  
+  - Dictionary and moderation flows  
+- Ensured edge cases were handled properly  
+
+---
+
+### Deployment (AWS Kubernetes)
+
+I handled deployment of the application on AWS Kubernetes.
+
+This involved:
+
+- Managing EC2-based clusters  
+- Deploying backend services  
+- Ensuring frontend-backend connectivity  
+- Debugging networking and environment issues  
+
+---
+
+## Development Process (Agile & Team Collaboration)
+
+This project was developed in a team using an Agile workflow.
+
+We used Jira to:
+
+- Break down features into tasks and user stories  
+- Track progress across sprints  
+- Assign responsibilities  
+- Manage bugs and feature improvements  
+
+Working in this setup required:
+
+- Coordinating API contracts between frontend and backend  
+- Ensuring consistency across independently developed features  
+- Communicating design decisions clearly within the team  
+
+---
+
+## Key Features
+
+### Learning System
+
+- Lesson-based progression  
+- Learning tree structure  
+- Randomized question flows  
+- Flashcards for reinforcement  
+- Mastery tracking per slang term  
+
+---
+
+### Dictionary & Contributions
+
+- Searchable slang database  
+- Definitions, examples, and origins  
+- User contribution flow  
+- Moderator approval system  
+- Upvotes and learned-term tracking  
+
+---
+
+### Gameplay & Engagement
+
+- Slangle — daily slang guessing game  
+- 1v1 Quiz — challenge friends  
+- Quests — activity-based rewards  
+
+---
+
+### Social Layer
+
+- Friends and friend requests  
+- Profile system with avatars  
+- Leaderboards and ranking  
+
+---
+
+### AI Assistant (MyHomie)
+
+- Slang-focused assistant  
+- Contextual help within the app  
+
+This component was primarily developed by my teammates.
+
+---
+
+## Challenges
+
+### 1. Coordinating a Large Feature Set
+
+The system combined:
+
+- Learning  
+- Social features  
+- Games  
+- AI components  
+
+Maintaining consistency across features required coordination between team members.
+
+---
+
+### 2. Backend Design with Spring Boot
+
+The learning system and moderation flow required:
+
+- Tracking progress per user  
+- Managing lesson states  
+- Handling user-generated content  
+- Supporting approval workflows  
+
+Designing this cleanly using Spring Boot and JPA required careful structuring of entities and services.
+
+---
+
+### 3. Working in an Agile Team
+
+Using Jira and Agile practices introduced new challenges:
+
+- Managing dependencies between features  
+- Keeping tasks well-scoped  
+- Aligning across multiple contributors  
+
+---
+
+## What I Learned
+
+- Structuring backend systems using Spring Boot  
+- Designing REST APIs for complex product features  
+- Implementing moderation workflows for user-generated content  
+- Writing unit tests with Mockito to ensure reliability  
+- Working in an Agile team using Jira  
+- Coordinating development across multiple contributors  
+- Handling deployment in a cloud environment  
+
+---
+
+## Team Contributions
+
+This was a collaborative project.
+
+My teammates worked on:
+
+- MyHomie (AI assistant)  
+- Slangle (daily word game)  
+- Learning tree system  
+- 1v1 competitive quizzes  
+- Profile and social features  
+
+---
+
+## If I Revisited This Project
+
+If I had more time, I would focus on:
+
+- Improving backend scalability  
+- Increasing test coverage further  
+- Adding integration tests beyond unit testing  
+- Improving CI/CD for automated testing and deployment  
+
+---
+
+## Final Thoughts
+
+BrainBot combines structured learning with community-driven content and social interaction.
+
+It brought together backend engineering, testing, deployment, and team collaboration into one system, and highlighted the importance of building software that remains maintainable and coherent as it grows.
