@@ -12,7 +12,7 @@ interface Experience {
 const experiences: Experience[] = [
   {
     title: "GovTech Systems Engineer Intern",
-    description: "Internship at GovTech where I worked on various systems engineering projects.",
+    description: "Internship at GovTech where I worked under the Smart City Technology Disvision (SCTD) in the Open Digital Platform (ODP) project.",
     image: "govtech.png",
     MDXComponent: null,
     github: "",

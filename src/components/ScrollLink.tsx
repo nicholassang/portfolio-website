@@ -29,7 +29,7 @@ const ScrollLink = ({ to, label, onClick }: ScrollLinkProps) => {
     <a
       href={to}
       onClick={handleClick}
-      className="py-2 px-3 hover:text-cyan-600"
+      className="hover:text-cyan-600"
     >
       {label}
     </a>
