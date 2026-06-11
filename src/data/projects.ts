@@ -12,6 +12,9 @@ import artstudiocafeMDX from "../projects/art-studio-cafe.mdx";
 import tpchq13MDX from "../projects/tpch-q13.mdx";
 import finsightMDX from "../projects/finsight.mdx";
 import brainbotMDX from "../projects/brainbot.mdx";
+import orderBookMDX from "../projects/orderbook.mdx";
+import tradingBotMDX from "../projects/tradingbot.mdx";
+
 
 interface Project {
   title: string;
@@ -26,6 +29,28 @@ interface Project {
 }
 
 const projects: Project[] = [
+  {
+    title: "Order Book Implementations",
+    slug: "order-book-implementations",
+    description: "Implementations of order book algorithms for high-frequency trading under different simulated market conditions.",
+    image: "order-book.png",
+    MDXComponent: orderBookMDX,
+    github: "https://github.com/nicholassang/Order-Book-Implementations",
+    website: "",
+    skills: ["C++", "CMake"],
+    year: 2026
+  },
+  {
+    title: "[SGxHK Quant Trading Hackathon] Trading Bot",
+    slug: "trading-bot",
+    description: "A deployed bot earning profits through cryptocurrency trading.",
+    image: "trading-bot.jpg",
+    MDXComponent: tradingBotMDX,
+    github: "https://github.com/nicholassang/Quant-Trading-Hack-SG-HK-26",
+    website: "",
+    skills: ["Python", "AWS", "Termux", "Apscheduler"],
+    year: 2026
+  },
   {
     title: "Stress Card Game",
     slug: "stress-game",

@@ -1,0 +1,58 @@
+---
+
+## Introduction
+
+The python trading bot was built to compete in the 1-week SGxHK Quant Trading Hackathon. I was the team lead of 3 students, and mainly handled the implementation of our trading strategy. 
+
+We traded in a simulated environment by TigerBrokers with cryptocurrencies, under the team name 'fordavibes' which showcases our casual but determined approach to the competition.
+
+---
+
+## Trading strategy
+
+While we were no experts in trading or financial markets, we decided to use a relatively simple strategy. Credit goes to my two other economics teammates for doing research and developing the overall plan.
+
+The instructions to our bot:
+- Check every crypto coin, every hour, and keep track of the price
+- If the past 5 prices of a coin shows an increasing trend, we buy
+- Otherwise, we sell (if we hold quantity of that coin)
+
+As I learnt from one financially adept teammate, most trading strategies fail regardless of how complex the trading strategy is. As such, we felt that our strategy, while simplistic, seem sound.
+
+---
+
+## Implementation
+
+This is where I come in. We mainly took our market data from Binance API. 
+
+There are around 10-20 crypto coins we can trade with, so we took all of their data and tracked them every hour. I designed something akin to the ETL pipeline process; the data is extracted hourly, before being transformed into csv files, before being processed by the bot who then decides what to buy and sell.
+
+To diversify our portfolio, we commanded the bot to buy 30% of its remaining money. I added a component where logs can be saved for error handling as well.
+
+Nothing was "loaded" (ETL) because there was no need for the small amounts of data to be saved securely. Not to mention, I was worried that somehow calls made to a self-hosted Postgres server would incur latency, which may somehow affect our performance. It's an unlikley scenario but I didn't want to take any risks.
+
+AWS accounts were provisioned for each team, along with one EC2. I installed our Python trading bot into the EC2, and used termux to enable the bot to run continously. Apscheduler library was used for getting the bot to check data every hour. 
+
+---
+
+## Experience
+
+Overall, we did much better than expected, at least in the first half of the competition. ;p
+
+We reached a peak of 1.4% profits, and was ranked 4th in the SIngapore Region out of 50+ teams. We were escatic ! 
+
+However, in the latter parts of the competition we dropped to -0.1%.
+
+Our bot does amazingly well at stable markets. When the "market" was crashing, all reds blazing, other teams with more complex algorithms suffered immensely. And when the "market" is bull-ish, our bot made the right call to get the rising stocks. 
+
+In unstable markets, which was the second half of the competition, our bot struggled to keep up. We also realized that a 1 hour schedule was probably not ideal when the market was very volatile. Our strategy overall was better suited to a stable, predictable market.
+
+---
+
+## Thoughts
+
+We didn't manage to proceed to the final round, but I was very grateful for the experience, especially to my teammates worked with me in this hackathon (I would have done solo or not at all if it wasn't for them).
+
+This hackathon draws many learning points. Particularly, I was exposed to how complex and intellectually stimulating the quant trading process is. From developing strategies to implementing and designing the trading bot.
+
+It was very fun and interesting !

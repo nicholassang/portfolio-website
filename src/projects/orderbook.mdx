@@ -1,0 +1,132 @@
+## Introduction
+
+This project was built as a personal exploration into quantitative trading systems and high-performance software engineering. Having previously participated in a quant trading hackathon using Python, I wanted to better understand the engineering side of financial systems while deepening my knowledge of modern C++.
+
+The goal was not to build a profitable trading strategy, but rather to investigate how different order book implementations behave under varying market conditions. In financial markets, order books sit at the core of exchanges, and even small inefficiencies can significantly impact latency and throughput.
+
+To explore these trade-offs, I implemented multiple order book designs using different C++ data structures and benchmarked them against simulated market environments.
+
+---
+
+## Project Overview
+
+The project simulates several order book implementations and evaluates their performance across different market scenarios.
+
+The implementations include:
+
+* Map-based order book
+* Unordered map-based order book
+* Vector-based order book
+* Priority queue-based order book
+
+A separate market generator creates realistic trading conditions, allowing each implementation to be tested under:
+
+* Normal market activity
+* Price spikes
+* Trending markets
+* High-frequency trading (HFT) conditions
+* Random market behavior
+
+Each implementation is benchmarked and ranked based on execution speed, throughput, and overall efficiency.
+
+---
+
+## Implementation
+
+The project was written entirely in C++ and built using CMake, with a Ninja build system and g++ compiler.
+
+One of the key goals was to replicate some of the design considerations found in real-world matching engines. While building the system, I learned that choosing the right data structure is often more important than implementing complicated algorithms.
+
+For example, I initially assumed vectors would be the preferred container because of their cache friendliness and general familarity. However, I quickly discovered why many order book implementations use linked lists for individual price levels.
+
+Each order needs to be tracked so that cancellations can occur efficiently. Using a vector introduces a problem: insertions and reallocations can invalidate pointers and iterators, making previously stored references unsafe.
+
+Instead, I used `std::list` for order queues at each price level because iterators remain stable even when new orders are inserted. Combined with an `unordered_map` that tracks the location of every order, cancellations can be performed in constant time.
+
+```cpp
+struct OrderLocation {
+    Side side; # which is BUY or SELL
+    uint32_t price;
+    std::list<Order>::iterator iterator;
+};
+```
+
+This allowed me to store a direct reference to each order's position in the book and erase it instantly without searching through the queue.
+
+Another interesting discovery was the importance of latency-aware design. Operations that appear inexpensive in theory can become bottlenecks when executed millions of times. Throughout the project, I frequently measured performance and compared implementations rather than relying solely on Big-O complexity analysis.
+
+---
+
+## Benchmarking
+
+To compare implementations fairly, I created a benchmarking framework that executes thousands of simulated orders across different market environments.
+
+The benchmark reports:
+
+* Execution times
+* Throughput (orders processed per second)
+* Rankings between implementations
+* Performance under different market conditions
+
+The results consistently showed that the map-based implementation performed best overall, achieving approximately 1.2 million orders per second.
+
+```
+| Implementation | Approximate Throughput |
+| -------------- | ---------------------- |
+| Map-based      | ~1.2M orders/sec       |
+| Priority Queue | ~0.9M orders/sec       |
+| Unordered Map  | ~0.8M orders/sec       |
+| Vector         | ~0.6M orders/sec       |
+```
+
+One surprising outcome was that some theoretically attractive structures performed worse in practice because of additional overhead (like Vector), memory access patterns, or deletion costs.
+
+This reinforced an important lesson: benchmarking is essential. Assumptions about performance are often incorrect until validated with real measurements.
+
+---
+
+## Testing
+
+Because financial systems require correctness as much as speed, I also implemented a testing suite for the order book.
+
+The tests verify:
+
+* Order insertion
+* Order cancellation
+* Matching behavior
+* Data structure integrity
+* Consistent behavior across implementations
+
+While developing the project, I gained a much greater appreciation for testing. Small bugs in matching logic or order tracking can produce incorrect market states that are difficult to detect without automated validation.
+
+---
+
+## Experience
+
+This project taught me significantly more than I initially expected.
+
+From a C++ perspective, I became much more comfortable with:
+
+* Iterators and iterator stability
+* STL container trade-offs
+* Memory management concepts
+* Performance-oriented programming
+* Modern C++ design patterns
+
+Before this project, I viewed an order book as a relatively straightforward data structure. 
+
+After implementing several versions and benchmarking them, I gained a much deeper appreciation for the complexity of exchange infrastructure and matching engines.
+
+One illutration is that through this project, and some painstaking hours, trading firms typically use 130 cents instead of 1.3 dollars. Because of a static_cast narrowing conversion and the inaccuracies of decimal points, infromation can be lost. Using full cents in integar prevnts this error.
+
+---
+
+## Thoughts
+
+Overall, this project achieved exactly what I hoped it would.
+
+It strengthened my understanding of C++, exposed me to the engineering challenges behind quantitative trading systems, and gave me practical experience designing, benchmarking, and testing performance-critical software.
+
+Most importantly, it sparked a greater interest in low-latency systems and financial engineering.
+
+It was a fun and rewarding project, and one that significantly improved both my C++ skills and my understanding of quantitative trading infrastructure.
