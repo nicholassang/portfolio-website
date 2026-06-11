@@ -71,7 +71,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         <div className="text-2xl font-bold tracking-wider">
-          {"{{/* Nicholas Ang /*}}"}
+          {"{{ Nicholas Ang }}"}
         </div>
 
         {/* Desktop menu */}

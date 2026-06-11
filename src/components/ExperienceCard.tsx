@@ -38,7 +38,7 @@ const ExperienceCard = ({
           {/* Year Badge */}
           {year && (
             <span className="absolute top-3 right-3 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
-              {year} May
+              May - Dec {year}
             </span>
           )}
         </div>

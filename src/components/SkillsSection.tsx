@@ -18,9 +18,10 @@ const skillsData: SkillCategory[] = [
     category: "Languages",
     skills: [
       { name: "TypeScript", level: 80, details: "Comfortable with TS features, typing, and React + Node integration" },
+      { name: "C++", level: 60, details: "Familiar with syntax and algorithms, mainly build with CMake, and dabbled with Emscripten C++" },
       { name: "Python", level: 60, details: "Used for scripting, automation, and some backend work. I also mainly code algorithms & data structures questions with Python" },
       { name: "Java", level: 40, details: "Familiar with core Java and OOP concepts, worked in many school projects with Java" },
-      { name: "C++", level: 20, details: "Basic knowledge of syntax and algorithms, mainly build with CMake, and dabbled with Emscripten C++" },
+      { name: "C", level: 20, details: "Basic knowledge of syntax and programming concepts, touched it in some projects" },
     ],
   },
   {
@@ -45,10 +46,8 @@ const skillsData: SkillCategory[] = [
   {
     category: "Cloud",
     skills: [
-      { name: "AWS EC2", level: 60, details: "Used for one of my projects, and am familar with how it can be integrated in larger scale productions" },
-      { name: "Lightsail", level: 60, details: "Deploying simple applications on Lightsail before" },
-      { name: "AWS Lambda", level: 40, details: "Mainly used Lambda for REST API connections for a serverless architecture" },
-      { name: "API Gateway", level: 40, details: "Configuring endpoints, request/response mapping, and authorization with AWS projects" },
+      { name: "AWS", level: 80, details: "Mainly used AWS for my projects, and I hold 2 AWS certifications" },
+      { name: "Azure", level: 60, details: "Had experience with Azure in my school projects and GovTech internship" },
     ],
   },
   {
@@ -59,6 +58,7 @@ const skillsData: SkillCategory[] = [
       { name: "Docker", level: 60, details: "Used docker to containerize some of my projects for portability" },
       { name: "Docker Compose", level: 40, details: "For projects that requires many different containers, I will use Docker Compose. Though I am not too familiar with yaml files, I am confident I can quickly learn it" },
       { name: "Nginx", level: 40, details: "Used as reverse proxy and load balancer for most of my deployments. I put it lower than the rest because I do not fully understand how forward proxies can be used, as I mean used Nginx for reverse proxies for my servers" },
+      { name: "Terraform", level: 40, details: "Worked Extensively with Terraform in my GovTech internship" },
     ],
   },
 ];
@@ -83,7 +83,11 @@ const SkillsSection = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
     >
-      <h2 className="text-4xl font-semibold mb-12 text-center">{"{{ Technical Skills }}"}</h2>
+      <h2 className="text-4xl font-semibold mb-12 text-center">{"{ Technical Skills }"} 
+        <div className="text-sm text-gray-900 dark:text-gray-400 text-center">
+          {"*Based on confidence and experience, a general idea of proficiency."}
+        </div>
+      </h2>
 
       <div className="grid gap-10 w-full max-w-5xl md:grid-cols-2">
         {skillsData.map((category) => (

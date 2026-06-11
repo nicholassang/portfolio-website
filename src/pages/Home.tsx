@@ -8,7 +8,7 @@ const HomePage = () => {
   };
 
   return (
-    <div>
+    <div className="mt-30 md:mt-10">
       {/* ================= HOME ================= */}
       <motion.section
         id="home"
@@ -29,7 +29,7 @@ const HomePage = () => {
         <motion.div className="max-w-xl text-center md:text-left" variants={sectionVariants}>
           <h1 className="text-5xl font-bold mb-4">Hi! I’m Nicholas.</h1>
           <p className="text-lg opacity-80 mb-6">
-            I’m a Software Engineering student at Singapore Management University (SMU), passionate about creating full-stack applications.
+            I’m a Software Engineering student at Singapore Management University (SMU), passionate about building and learning.
           </p>
           <a
             href="/projects"
@@ -60,7 +60,7 @@ const HomePage = () => {
         </motion.div>
 
         <motion.div className="max-w-xl text-center md:text-left" variants={sectionVariants}>
-          <h2 className="text-4xl font-semibold mb-10">{"{{ About Me }}"}</h2>
+          <h2 className="text-4xl font-semibold mb-10">{"/* About Me */"}</h2>
           <div className="text-lg leading-relaxed space-y-4 opacity-80">
             <p>
               I love building new projects, facing challenges, and sometimes failing - all as a way to learn modern technologies more deeply.
@@ -69,10 +69,10 @@ const HomePage = () => {
               “Failure is simply the opportunity to begin again, this time more intelligently.” - Henry Ford
             </p>
             <p>
-              Technology is constantly evolving, presenting complex problems that inspire me to grow and improve. I focus on writing cleaner, maintainable code to ensure my projects remain robust and scalable.
+              Technology is constantly evolving, presenting complex problems that inspire me to grow and improve. I focus on understanding how fundementally things work, so I can adapt and learn new tools quickly.
             </p>
             <p>
-              Outside of coding, I enjoy playing board games, watching shows, and hiking - it’s how I recharge and stay curious.
+              Outside of coding, I enjoy playing board games, watching shows, and hiking.
             </p>
           </div>
         </motion.div>
