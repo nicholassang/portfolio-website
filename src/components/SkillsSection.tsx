@@ -85,7 +85,7 @@ const SkillsSection = () => {
     >
       <h2 className="text-4xl font-semibold mb-12 text-center">{"{ Technical Skills }"} 
         <div className="text-sm text-gray-900 dark:text-gray-400 text-center">
-          {"*Based on confidence and experience, a general idea of proficiency."}
+          {"*Based on confidence and experience, a general idea of proficiency"}
         </div>
       </h2>
 
