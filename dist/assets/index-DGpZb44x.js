@@ -2121,7 +2121,7 @@ pool.release(packet);
 `,a.jsxs(e.li,{children:[a.jsx(e.strong,{children:"Optimization:"})," ",a.jsx(e.code,{children:"-O3"}),", ",a.jsx(e.code,{children:"-march=native"})]}),`
 `]}),`
 `,a.jsx(e.p,{children:a.jsx(e.strong,{children:"Results:"})}),`
-`,a.jsx(e.pre,{children:a.jsx(e.code,{children:`| Benchmark                    | Performance         |\r
+`,a.jsx(e.pre,{children:a.jsx(e.code,{children:`| Benchmark                     | Performance         |\r
 |-------------------------------|---------------------|\r
 | Packet Pool Acquire/Release   | ~1 ns               |\r
 | SPSC Ring Buffer              | ~80M messages/sec   |\r
@@ -2133,7 +2133,7 @@ pool.release(packet);
 `})}),`
 `,a.jsx(e.p,{children:"These results reinforced the importance of memory layout, cache behavior, and workload characteristics when designing high-performance systems - the packet pool's constant-time acquire/release demonstrated the benefit of avoiding repeated heap allocations, while the SPSC queue's throughput showed the payoff of avoiding lock contention."}),`
 `,a.jsx(e.h3,{children:"FPGA Benchmarks"}),`
-`,a.jsx(e.pre,{children:a.jsx(e.code,{children:`| Metric               | Value        |\r
+`,a.jsx(e.pre,{children:a.jsx(e.code,{children:`| Metric                | Value        |\r
 |-----------------------|--------------|\r
 | Packets processed     | 1002         |\r
 | Cycles                | 1012         |\r
