@@ -1,0 +1,209 @@
+---
+
+## Introduction
+
+This project was built as a continuation of my previous exploration into quantitative trading infrastructure and high-performance systems programming. Previously, I implemented and benchmarked different order book designs to understand how data structures, memory layouts, and algorithmic choices affect matching engine performance.
+
+While that project focused on the internal processing of orders after entering the system, this project explores the earlier stages of the trading pipeline: receiving market data, decoding packets, transporting events efficiently, and updating the order book with minimal latency.
+
+---
+
+## Goals
+
+The goal of this project was to build a simplified version of the infrastructure used in electronic trading systems by implementing a low-latency market data processing engine in modern C++20. The system simulates a complete market data pipeline consisting of:
+
+- **Zero-copy packet decoding**
+- **Custom memory allocation**
+- **Lock-free communication**
+- **Order book updates**
+
+---
+
+## Key Concepts Explored
+
+### Cache Efficiency
+
+Modern CPUs are extremely fast, but memory access can become the bottleneck. This project focused on:
+
+- Contiguous memory layouts
+- Minimizing allocations
+- Reducing unnecessary copies
+- Cache-friendly data structures
+
+### False Sharing
+
+False sharing occurs when multiple CPU cores modify variables located on the same cache line, causing performance degradation. This project avoided these issues through:
+
+- Careful memory layout
+- Separating frequently modified variables
+- Understanding cache line boundaries
+
+### CPU Affinity and Thread Scheduling
+
+To reduce latency variance, the project used CPU affinity to:
+
+- Pin threads to dedicated cores
+- Avoid unnecessary context switches
+- Improve cache reuse
+
+### Memory Management
+
+General-purpose allocation introduces unpredictable latency. Instead, this project implemented a custom memory pool with:
+
+- Preallocated memory
+- Object reuse
+- Constant-time allocation
+
+---
+
+## System Architecture
+
+The software pipeline simulates a simplified market data ingestion system:
+
+```
+UDP Market Data Feed
+    |
+    v
+Zero-Copy Packet Decoder
+    |
+    v
+Packet Memory Pool
+    |
+    v
+Lock-Free SPSC Queue
+    |
+    v
+Order Book Engine
+```
+
+---
+
+## Implementation
+
+### Zero-Copy Packet Parser
+
+The parser avoids unnecessary data movement by interpreting incoming market packets directly from raw buffers. It uses:
+
+- Packed structures
+- Direct memory access
+- Binary decoding
+
+### Packet Memory Pool
+
+To avoid latency variation from repeated heap allocation, a custom memory pool was implemented. Features include:
+
+- Preallocated packet storage
+- Object reuse
+- Constant-time acquire/release
+
+Example:
+```cpp
+auto* packet = pool.acquire();
+process(packet);
+pool.release(packet);
+```
+
+### Lock-Free SPSC Queue
+
+The pipeline uses a Single Producer Single Consumer (SPSC) queue for communication between processing stages. Design goals:
+
+- No locking
+- Predictable latency
+- Minimal synchronization overhead
+
+### Order Book Engine
+
+The order book maintains current bid and ask levels. Supported operations include:
+
+- `addBid(price, quantity)`
+- `removeBid(price)`
+- `bestBid()`
+
+The design builds upon lessons from the previous order book project, optimizing for:
+
+- Contiguous memory structures
+- Cached best prices
+- Optimized lookups
+
+---
+
+## FPGA Simulation Prototype
+
+As an extension, I created a separate FPGA simulation using SystemVerilog and Verilator. The FPGA simulation includes:
+
+- Hardware packet parsing
+- Bid/ask update logic
+- Best bid/best ask output
+
+Results:
+- **Throughput:** ~247.5M packets/sec
+- **Latency:** 1 cycle (~4ns)
+
+---
+
+## Benchmarking
+
+### C++ Benchmarks
+
+Environment:
+- **CPU:** 18 cores @ 4.5GHz
+- **Compiler:** GCC 13
+- **Language:** C++20
+- **Optimization:** `-O3`, `-march=native`
+
+Results:
+| Benchmark                  | Performance          |
+|----------------------------|----------------------|
+| Packet Pool Acquire/Release| ~1 ns               |
+| SPSC Ring Buffer           | ~80M messages/sec   |
+| OrderBook Ask              | ~1.5 ns             |
+| OrderBook Depth 100        | ~2.6 μs             |
+
+### FPGA Benchmarks
+
+Results:
+- **Packets processed:** 1002
+- **Cycles:** 1012
+- **Packets/cycle:** 0.990119
+- **Clock frequency:** 250MHz
+- **Latency:** 4ns
+
+---
+
+## Testing
+
+Testing was implemented to ensure correctness across the system. Tests cover:
+
+- Packet decoding
+- Packet memory allocation
+- Queue operations
+- Order book updates
+- Bid/ask calculations
+- FPGA packet processing
+
+---
+
+## Lessons Learned
+
+This project significantly changed how I view high-performance systems. Key takeaways:
+
+- Data structures affect cache behavior
+- Memory allocation impacts latency consistency
+- Synchronization affects throughput
+- CPU architecture matters
+- Benchmarking is more reliable than intuition
+
+---
+
+## Final Thoughts
+
+This project achieved my goal of understanding the engineering side of quantitative trading systems. Together with my previous order book implementation project, it gave me a more complete view of modern trading infrastructure:
+
+- Market data ingestion
+- Low-latency processing
+- Order book management
+- Hardware acceleration possibilities
+
+It strengthened my understanding of modern C++, computer architecture, and performance engineering, sparking a deeper interest in low-latency systems and high-performance computing.
+
+---

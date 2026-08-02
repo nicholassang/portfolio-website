@@ -14,6 +14,7 @@ import finsightMDX from "../projects/finsight.mdx";
 import brainbotMDX from "../projects/brainbot.mdx";
 import orderBookMDX from "../projects/orderbook.mdx";
 import tradingBotMDX from "../projects/tradingbot.mdx";
+import marketParserMDX from "../projects/marketparser.mdx";
 
 
 interface Project {
@@ -30,6 +31,17 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: "Market Data Parser",
+    slug: "Market-Data-Parser",
+    description: "A low-latency market data processing engine built in C++20 featuring zero-copy packet parsing, lock-free queues, memory pooling, and order book optimization, with a SystemVerilog FPGA simulation prototype exploring hardware acceleration for trading infrastructure.",
+    image: "marketparser.png",
+    MDXComponent: marketParserMDX,
+    github: "https://github.com/nicholassang/Market-Data-Parser",
+    website: "",
+    skills: ["C++", "CMake", "SystemVerilog", "FPGA Simulation"],
+    year: 2026
+  },
+  { 
     title: "Order Book Implementations",
     slug: "order-book-implementations",
     description: "Implementations of order book algorithms for high-frequency trading under different simulated market conditions.",
