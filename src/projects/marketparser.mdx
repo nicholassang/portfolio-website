@@ -1,10 +1,12 @@
----
+# Low-Latency Market Data Processing Engine
 
 ## Introduction
 
 This project was built as a continuation of my previous exploration into quantitative trading infrastructure and high-performance systems programming. Previously, I implemented and benchmarked different order book designs to understand how data structures, memory layouts, and algorithmic choices affect matching engine performance.
 
 While that project focused on the internal processing of orders after entering the system, this project explores the earlier stages of the trading pipeline: receiving market data, decoding packets, transporting events efficiently, and updating the order book with minimal latency.
+
+Through both projects, I learned that low-latency performance is not determined only by algorithms or Big-O complexity, but also by computer architecture and engineering decisions — cache locality, memory allocation patterns, synchronization overhead, CPU scheduling, and data movement. Concepts explored previously, including false sharing, cache line alignment, CPU affinity, lock-free programming, atomic memory ordering, zero-copy processing, memory pooling, and benchmarking-driven optimization, became central considerations when designing this pipeline.
 
 ---
 
@@ -32,11 +34,11 @@ Modern CPUs are extremely fast, but memory access can become the bottleneck. Thi
 
 ### False Sharing
 
-False sharing occurs when multiple CPU cores modify variables located on the same cache line, causing performance degradation. This project avoided these issues through:
+False sharing occurs when multiple CPU cores modify independent variables that happen to sit on the same cache line, causing unnecessary cache invalidation and coherence traffic between cores. This project avoided these issues through:
 
 - Careful memory layout
 - Separating frequently modified variables
-- Understanding cache line boundaries
+- Aligning frequently accessed structures to cache-line boundaries
 
 ### CPU Affinity and Thread Scheduling
 
@@ -48,11 +50,17 @@ To reduce latency variance, the project used CPU affinity to:
 
 ### Memory Management
 
-General-purpose allocation introduces unpredictable latency. Instead, this project implemented a custom memory pool with:
+General-purpose allocation introduces unpredictable latency due to allocator overhead and fragmentation. Instead, this project implemented a custom memory pool with:
 
 - Preallocated memory
 - Object reuse
 - Constant-time allocation
+
+### Kernel-Bypass Networking (DPDK) — Context and Inspiration
+
+In real trading systems, the market data ingestion layer is often one of the largest sources of latency. Traditional networking through the Linux kernel network stack introduces overhead from packet copying, system calls, interrupts, and context switching. Technologies such as the **Data Plane Development Kit (DPDK)** address this by letting applications bypass much of the kernel networking stack and access network interface hardware directly through user-space drivers, using techniques such as polling, huge pages, memory pools, and zero-copy packet buffers.
+
+This project does not directly integrate DPDK, but the zero-copy parsing, memory pooling, and lock-free pipeline design were inspired by the same principles used in DPDK-based systems — the goal was to understand the software architecture behind these optimizations before extending toward hardware acceleration.
 
 ---
 
@@ -76,13 +84,15 @@ Lock-Free SPSC Queue
 Order Book Engine
 ```
 
+Instead of repeatedly allocating and copying market events, packets are decoded directly from raw buffers and reused through a preallocated memory pool to provide predictable latency. A lock-free Single Producer Single Consumer (SPSC) queue transfers events between pipeline stages without mutex contention, and the order book engine builds on lessons learned from the previous order book project.
+
 ---
 
 ## Implementation
 
 ### Zero-Copy Packet Parser
 
-The parser avoids unnecessary data movement by interpreting incoming market packets directly from raw buffers. It uses:
+The parser avoids unnecessary data movement by interpreting incoming market packets directly from raw buffers rather than copying them into intermediate structures. It uses:
 
 - Packed structures
 - Direct memory access
@@ -105,7 +115,7 @@ pool.release(packet);
 
 ### Lock-Free SPSC Queue
 
-The pipeline uses a Single Producer Single Consumer (SPSC) queue for communication between processing stages. Design goals:
+The pipeline uses a Single Producer Single Consumer (SPSC) queue for communication between processing stages, using atomic operations and careful memory ordering instead of mutexes. Design goals:
 
 - No locking
 - Predictable latency
@@ -129,13 +139,13 @@ The design builds upon lessons from the previous order book project, optimizing 
 
 ## FPGA Simulation Prototype
 
-As an extension, I created a separate FPGA simulation using SystemVerilog and Verilator. The FPGA simulation includes:
+As an extension of the software implementation, I created a separate FPGA simulation prototype using SystemVerilog and Verilator to explore how parts of a market data pipeline could potentially be accelerated in hardware. The FPGA design was not integrated with the C++ pipeline or deployed on physical hardware — it served as a proof-of-concept for hardware-based packet processing and deterministic latency. It includes:
 
 - Hardware packet parsing
 - Bid/ask update logic
 - Best bid/best ask output
 
-Results:
+**Results:**
 - **Throughput:** ~247.5M packets/sec
 - **Latency:** 1 cycle (~4ns)
 
@@ -143,30 +153,55 @@ Results:
 
 ## Benchmarking
 
+Rather than assuming optimizations would improve performance, each architectural decision was measured and compared against simpler alternatives. These experiments reinforced that latency in financial systems is often dominated by memory movement, cache behavior, and synchronization overhead rather than purely algorithmic complexity.
+
 ### C++ Benchmarks
 
-Environment:
+**Environment:**
 - **CPU:** 18 cores @ 4.5GHz
 - **Compiler:** GCC 13
 - **Language:** C++20
 - **Optimization:** `-O3`, `-march=native`
 
-Results:
-| Benchmark                  | Performance          |
-|----------------------------|----------------------|
-| Packet Pool Acquire/Release| ~1 ns               |
-| SPSC Ring Buffer           | ~80M messages/sec   |
-| OrderBook Ask              | ~1.5 ns             |
-| OrderBook Depth 100        | ~2.6 μs             |
+**Results:**
+
+| Benchmark                    | Performance         |
+|-------------------------------|---------------------|
+| Packet Pool Acquire/Release   | ~1 ns               |
+| SPSC Ring Buffer              | ~80M messages/sec   |
+| OrderBook — Best Ask          | ~1.5 ns             |
+| OrderBook — Random Ops        | ~7 ns               |
+| OrderBook — Depth 10          | ~160 ns             |
+| OrderBook — Depth 100         | ~2.6 μs             |
+| OrderBook — Depth 1000        | ~216 μs             |
+
+These results reinforced the importance of memory layout, cache behavior, and workload characteristics when designing high-performance systems — the packet pool's constant-time acquire/release demonstrated the benefit of avoiding repeated heap allocations, while the SPSC queue's throughput showed the payoff of avoiding lock contention.
 
 ### FPGA Benchmarks
 
-Results:
-- **Packets processed:** 1002
-- **Cycles:** 1012
-- **Packets/cycle:** 0.990119
-- **Clock frequency:** 250MHz
-- **Latency:** 4ns
+| Metric               | Value        |
+|-----------------------|--------------|
+| Packets processed     | 1002         |
+| Cycles                | 1012         |
+| Packets/cycle         | 0.990119     |
+| Clock frequency       | 250 MHz      |
+| Latency               | 1 cycle (4ns)|
+
+Unlike software pipelines, where latency varies with CPU scheduling, cache state, and OS behavior, the hardware pipeline provides deterministic, predictable execution timing.
+
+---
+
+## Design Comparisons
+
+Several comparisons were made throughout development to validate that each optimization was actually worth its complexity:
+
+- **Copy vs. zero-copy parsing:** A traditional pipeline copies incoming network data into application buffers before decoding, adding memory movement and cache pollution. Zero-copy parsing — interpreting structures directly from existing buffers — removed this overhead and improved latency consistency.
+- **Dynamic allocation vs. memory pool:** Using `new`/`delete` per market event introduces unpredictable latency from allocator overhead and fragmentation. The preallocated memory pool made acquisition and release constant-time operations (~1 ns), which is why production trading systems avoid frequent heap allocation on latency-critical paths.
+- **Mutex-based queue vs. lock-free SPSC queue:** A mutex-based queue causes contention and scheduling overhead under high message rates. The lock-free SPSC queue, using atomics and careful memory ordering, let producer and consumer threads communicate without blocking, reaching ~80M messages/sec.
+- **Kernel sockets vs. kernel-bypass (DPDK) networking:** A conventional UDP receiver relies on the Linux kernel network stack, incurring overhead from interrupts, system calls, packet copying, and context switching. DPDK-style kernel bypass removes much of this by polling network devices directly from user space. While DPDK wasn't integrated into this project, the zero-copy decoder, packet pool, and lock-free pipeline were designed around the same principles. A natural future extension would be to benchmark a standard-socket UDP receiver against a DPDK-based one to quantify the difference directly.
+- **Software vs. hardware (FPGA) processing:** The FPGA prototype demonstrated deterministic, cycle-accurate latency (4ns) versus the inherent variability of software execution — illustrating why some HFT firms pair optimized software (e.g., DPDK-based pipelines) with FPGA acceleration for the most latency-sensitive components.
+
+Individually, removing memcpy calls, avoiding dynamic allocation, eliminating locks, improving cache locality, and bypassing unnecessary networking layers each look like small gains — but together they compound into a significant improvement in throughput and latency consistency, mirroring the engineering philosophy of real high-frequency trading infrastructure.
 
 ---
 
@@ -192,6 +227,7 @@ This project significantly changed how I view high-performance systems. Key take
 - Synchronization affects throughput
 - CPU architecture matters
 - Benchmarking is more reliable than intuition
+- Real-world performance depends on designing the entire system around the behavior of the underlying hardware — not just on algorithmic efficiency
 
 ---
 
@@ -199,11 +235,11 @@ This project significantly changed how I view high-performance systems. Key take
 
 This project achieved my goal of understanding the engineering side of quantitative trading systems. Together with my previous order book implementation project, it gave me a more complete view of modern trading infrastructure:
 
-- Market data ingestion
-- Low-latency processing
+- Market data ingestion and network processing
+- Low-latency software design
 - Order book management
-- Hardware acceleration possibilities
+- Hardware acceleration possibilities (FPGA)
 
-It strengthened my understanding of modern C++, computer architecture, and performance engineering, sparking a deeper interest in low-latency systems and high-performance computing.
+It strengthened my understanding of modern C++, computer architecture, networking, and performance engineering — and sparked a deeper interest in low-latency systems, kernel-bypass networking, and hardware-accelerated computing.
 
 ---
